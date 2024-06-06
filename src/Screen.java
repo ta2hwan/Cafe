@@ -135,21 +135,48 @@ public class Screen extends JFrame {
 
     private JPanel createSmoothiePanel() {
         JPanel panel = new JPanel();
-        // 스무디 종류의 음료들을 추가하고 정리합니다.
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
+        panel.setVisible(true);
+
+        smoothieMenu.add(Products.createProductButton("망고스무디", 3000, "images/mango_smoothie.jpg"));
+        smoothieMenu.add(Products.createProductButton("딸기스무디", 3000, "images/strawberry_smoothie.jpg"));
+
+        for(JButton smoothie : smoothieMenu){
+            panel.add(smoothie);
+        }
+
         panel.setBackground(Color.WHITE); // 예시로 패널의 배경색을 흰색으로 설정합니다.
         return panel;
     }
 
     private JPanel createAdePanel() {
         JPanel panel = new JPanel();
-        // 에이드 종류의 음료들을 추가하고 정리합니다.
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
+        panel.setVisible(true);
+
+        adeMenu.add(Products.createProductButton("블루레몬에이드", 3000, "images/blueLemon_ade.jpg"));
+        adeMenu.add(Products.createProductButton("자몽에이드", 3000, "images/grapeFruit_ade.jpg"));
+
+        for(JButton ade : adeMenu){
+            panel.add(ade);
+        }
+
         panel.setBackground(Color.WHITE); // 예시로 패널의 배경색을 흰색으로 설정합니다.
         return panel;
     }
 
     private JPanel createDessertPanel() {
         JPanel panel = new JPanel();
-        // 디저트 종류의 음료들을 추가하고 정리합니다.
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
+        panel.setVisible(true);
+
+        smoothieMenu.add(Products.createProductButton("망고스무디", 3000, "images/mango_smoothie.jpg"));
+        smoothieMenu.add(Products.createProductButton("딸기스무디", 3000, "images/strawberry_smoothie.jpg"));
+
+        for(JButton smoothie : smoothieMenu){
+            panel.add(smoothie);
+        }
+
         panel.setBackground(Color.WHITE); // 예시로 패널의 배경색을 흰색으로 설정합니다.
         return panel;
     }
