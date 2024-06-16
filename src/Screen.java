@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+
 class Products {
     String name; //상품명
     int price;
@@ -23,14 +24,50 @@ class Products {
         return new ImageIcon(resizedImage);
     }
 
-    public static JButton createProductButton(String name, int price, String imagePath) {
+    public static JButton createProductButton(String name, int price, String imagePath, OrderList orderList) {
         ImageIcon productImage = resizeImageIcon(imagePath, 150, 130);
         JButton productButton = new JButton(name + " (" + price + "원)", productImage);
         productButton.setPreferredSize(new Dimension(150, 150));
         productButton.setHorizontalTextPosition(SwingConstants.CENTER);
         productButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         productButton.setToolTipText(name + ": " + price + "원");
+        productButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                orderList.addItem(new Products(name, price));
+            }
+        });
         return productButton;
+    }
+}
+
+class OrderList extends JPanel{
+    private JTextArea orderTextArea;
+    private ArrayList<Products> items;
+
+    public OrderList(){
+        setLayout(new BorderLayout());
+        items = new ArrayList<>();
+
+        orderTextArea = new JTextArea(10, 30);
+        orderTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(orderTextArea);
+
+        add(scrollPane, BorderLayout.CENTER);
+        setBorder(BorderFactory.createTitledBorder("Order List"));
+    }
+
+    public void addItem(Products product){
+        items.add(product);
+        updateOrderTextArea();
+    }
+
+    private void updateOrderTextArea() {
+        StringBuilder sb = new StringBuilder();
+        for (Products product : items) {
+            sb.append(product.toString());
+        }
+        orderTextArea.setText(sb.toString());
     }
 }
 
@@ -46,6 +83,8 @@ public class Screen extends JFrame {
     private Vector<JButton> adeMenu;
     private Vector<JButton> dessertMenu;
 
+    private OrderList orderList;
+
     // 초기화면
     public Screen() {
         setTitle("카페 키오스크 프로그램");
@@ -58,6 +97,8 @@ public class Screen extends JFrame {
         adeMenu = new Vector<>();
         dessertMenu = new Vector<>();
 
+        orderList = new OrderList();
+        c.add(orderList, BorderLayout.SOUTH);
 
 
         // 각각의 패널을 초기화합니다.
@@ -69,10 +110,9 @@ public class Screen extends JFrame {
         // 메뉴를 추가합니다.
         menu();
 
-        // 초기화면에서는 커피 패널이 보이도록 설정합니다.
         c.add(coffeePanel, BorderLayout.CENTER);
 
-        setSize(700, 700);
+        setSize(900, 700);
         setVisible(true);
     }
 
@@ -122,8 +162,8 @@ public class Screen extends JFrame {
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
         panel.setVisible(true);
 
-        coffeeMenu.add(Products.createProductButton("아메리카노", 3000, "images/americano.jpg"));
-        coffeeMenu.add(Products.createProductButton("카페라떼", 3000, "images/cafe_latte.jpg"));
+        coffeeMenu.add(Products.createProductButton("아메리카노", 3000, "images/americano.jpg", orderList));
+        coffeeMenu.add(Products.createProductButton("카페라떼", 3000, "images/cafe_latte.jpg", orderList));
 
         for(JButton coffee : coffeeMenu){
             panel.add(coffee);
@@ -138,8 +178,8 @@ public class Screen extends JFrame {
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
         panel.setVisible(true);
 
-        smoothieMenu.add(Products.createProductButton("망고스무디", 3000, "images/mango_smoothie.jpg"));
-        smoothieMenu.add(Products.createProductButton("딸기스무디", 3000, "images/strawberry_smoothie.jpg"));
+        smoothieMenu.add(Products.createProductButton("망고스무디", 3000, "images/mango_smoothie.jpg", orderList));
+        smoothieMenu.add(Products.createProductButton("딸기스무디", 3000, "images/strawberry_smoothie.jpg", orderList));
 
         for(JButton smoothie : smoothieMenu){
             panel.add(smoothie);
@@ -154,8 +194,8 @@ public class Screen extends JFrame {
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
         panel.setVisible(true);
 
-        adeMenu.add(Products.createProductButton("블루레몬에이드", 3000, "images/blueLemon_ade.jpg"));
-        adeMenu.add(Products.createProductButton("자몽에이드", 3000, "images/grapeFruit_ade.jpg"));
+        adeMenu.add(Products.createProductButton("블루레몬에이드", 3000, "images/blueLemon_ade.jpg", orderList));
+        adeMenu.add(Products.createProductButton("자몽에이드", 3000, "images/grapeFruit_ade.jpg", orderList));
 
         for(JButton ade : adeMenu){
             panel.add(ade);
@@ -170,11 +210,11 @@ public class Screen extends JFrame {
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
         panel.setVisible(true);
 
-        smoothieMenu.add(Products.createProductButton("망고스무디", 3000, "images/mango_smoothie.jpg"));
-        smoothieMenu.add(Products.createProductButton("딸기스무디", 3000, "images/strawberry_smoothie.jpg"));
+        dessertMenu.add(Products.createProductButton("와플", 3000, "images/waffle.jpg", orderList));
+        dessertMenu.add(Products.createProductButton("아이스크림", 3000, "images/icecream.jpg", orderList));
 
-        for(JButton smoothie : smoothieMenu){
-            panel.add(smoothie);
+        for(JButton dessert : dessertMenu){
+            panel.add(dessert);
         }
 
         panel.setBackground(Color.WHITE); // 예시로 패널의 배경색을 흰색으로 설정합니다.
