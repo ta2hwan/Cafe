@@ -31,13 +31,13 @@ public class Products {
         productButton.addActionListener(new ActionListener() {          // 버튼을 누르면 주문 리스트에 상품 정보 추가
             public void actionPerformed(ActionEvent e) {
                 int response = JOptionPane.showConfirmDialog(null,
-                        name + "을(를) 장바구니에 추가하시겠습니까?",
+                        name + "을(를) 리스트에 추가하시겠습니까?",
                         "상품 추가 확인",
                         JOptionPane.YES_NO_OPTION);
 
                 if (response == JOptionPane.YES_OPTION) {
                     orderList.addItem(new Products(name, price));
-                    JOptionPane.showMessageDialog(null, name + "이(가) 장바구니에 추가되었습니다.");
+                    JOptionPane.showMessageDialog(null, name + "이(가) 리스트에 추가되었습니다.");
                 }
             }
         });

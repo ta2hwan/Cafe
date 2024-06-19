@@ -17,7 +17,7 @@ public class OrderList extends JPanel {
         orderPanel = new JPanel();
         orderPanel.setLayout(new BoxLayout(orderPanel, BoxLayout.Y_AXIS)); // BoxLayout을 사용하여 수직 정렬
         JScrollPane scrollPane = new JScrollPane(orderPanel); //스크롤 생성
-        scrollPane.setPreferredSize(new Dimension(400, 200)); // 주문 리스트 패널 크기 설정
+        scrollPane.setPreferredSize(new Dimension(900, 200)); // 주문 리스트 패널 크기 설정
         add(scrollPane, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder("주문 리스트"));
 
