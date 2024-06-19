@@ -3,75 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-
-class Products {
-    String name; //상품명
-    int price;
-
-    public Products(String name, int price){
-        this.name = name;
-        this.price = price;
-    }
-
-    public String toString(){
-        return ("상품명 : " + name + "\t가격 : " + price + "\n");
-    }
-
-    private static ImageIcon resizeImageIcon(String imagePath, int width, int height){
-        ImageIcon originalIcon = new ImageIcon(imagePath);
-        Image originalImage = originalIcon.getImage();
-        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImage);
-    }
-
-    public static JButton createProductButton(String name, int price, String imagePath, OrderList orderList) {
-        ImageIcon productImage = resizeImageIcon(imagePath, 150, 130);
-        JButton productButton = new JButton(name + " (" + price + "원)", productImage);
-        productButton.setPreferredSize(new Dimension(150, 150));
-        productButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        productButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-        productButton.setToolTipText(name + ": " + price + "원");
-        productButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                orderList.addItem(new Products(name, price));
-            }
-        });
-        return productButton;
-    }
-}
-
-class OrderList extends JPanel{
-    private JTextArea orderTextArea;
-    private ArrayList<Products> items;
-
-    public OrderList(){
-        setLayout(new BorderLayout());
-        items = new ArrayList<>();
-
-        orderTextArea = new JTextArea(10, 30);
-        orderTextArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(orderTextArea);
-
-        add(scrollPane, BorderLayout.CENTER);
-        setBorder(BorderFactory.createTitledBorder("Order List"));
-    }
-
-    public void addItem(Products product){
-        items.add(product);
-        updateOrderTextArea();
-    }
-
-    private void updateOrderTextArea() {
-        StringBuilder sb = new StringBuilder();
-        for (Products product : items) {
-            sb.append(product.toString());
-        }
-        orderTextArea.setText(sb.toString());
-    }
-}
-
-public class Screen extends JFrame {
+public class Main extends JFrame {
     private Container c = getContentPane();
     private JPanel coffeePanel;
     private JPanel smoothiePanel;
@@ -86,7 +18,7 @@ public class Screen extends JFrame {
     private OrderList orderList;
 
     // 초기화면
-    public Screen() {
+    public Main() {
         setTitle("카페 키오스크 프로그램");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -101,15 +33,16 @@ public class Screen extends JFrame {
         c.add(orderList, BorderLayout.SOUTH);
 
 
-        // 각각의 패널을 초기화합니다.
+        // 4개 패널 생성, 안 보이는 상태
         coffeePanel = createCoffeePanel();
         smoothiePanel = createSmoothiePanel();
         adePanel = createAdePanel();
         dessertPanel = createDessertPanel();
 
-        // 메뉴를 추가합니다.
+        // 메뉴 추가
         menu();
 
+        // 초기 화면은 커피패널로 설정
         c.add(coffeePanel, BorderLayout.CENTER);
 
         setSize(900, 700);
@@ -121,18 +54,32 @@ public class Screen extends JFrame {
         menuPanel.setLayout(new GridLayout(1, 4));
 
         JMenuItem[] menuItem = new JMenuItem[4];
-        String[] menuItemName = { "커피", "스무디", "에이드", "디저트" };
+        String[] menuItemName = {"커피", "스무디", "에이드", "디저트"};
 
         for (int i = 0; i < menuItem.length; i++) {
             menuItem[i] = new JMenuItem(menuItemName[i]);
             menuItem[i].setPreferredSize(new Dimension(menuItem[i].getPreferredSize().width, 70));
             menuItem[i].addActionListener(new MenuActionListener());
             menuPanel.add(menuItem[i]);
+            menuItem[i].setRolloverEnabled(true);
+            // 메뉴에 마우스를 올리면 LIGHT_GRAY로 색 변경
+            menuItem[i].addMouseListener(new MouseAdapter() {
+                public void mouseEntered(MouseEvent e) {
+                    JMenuItem item = (JMenuItem) e.getSource();
+                    item.setBackground(Color.LIGHT_GRAY);
+                }
+
+                public void mouseExited(MouseEvent e) {
+                    JMenuItem item = (JMenuItem) e.getSource();
+                    item.setBackground(null);
+                }
+            });
         }
 
         c.add(menuPanel, BorderLayout.NORTH);
     }
 
+    // 메뉴를 마우스 클릭하면 showPanel 메소드 실행
     private class MenuActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JMenuItem menuItem = (JMenuItem) e.getSource();
@@ -157,6 +104,7 @@ public class Screen extends JFrame {
         }
     }
 
+    // 커피 패널 생성
     private JPanel createCoffeePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
@@ -165,7 +113,7 @@ public class Screen extends JFrame {
         coffeeMenu.add(Products.createProductButton("아메리카노", 3000, "images/americano.jpg", orderList));
         coffeeMenu.add(Products.createProductButton("카페라떼", 3000, "images/cafe_latte.jpg", orderList));
 
-        for(JButton coffee : coffeeMenu){
+        for (JButton coffee : coffeeMenu) {
             panel.add(coffee);
         }
 
@@ -173,6 +121,7 @@ public class Screen extends JFrame {
         return panel;
     }
 
+    // 스무디 패널 생성
     private JPanel createSmoothiePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
@@ -181,7 +130,7 @@ public class Screen extends JFrame {
         smoothieMenu.add(Products.createProductButton("망고스무디", 3000, "images/mango_smoothie.jpg", orderList));
         smoothieMenu.add(Products.createProductButton("딸기스무디", 3000, "images/strawberry_smoothie.jpg", orderList));
 
-        for(JButton smoothie : smoothieMenu){
+        for (JButton smoothie : smoothieMenu) {
             panel.add(smoothie);
         }
 
@@ -189,6 +138,7 @@ public class Screen extends JFrame {
         return panel;
     }
 
+    // 에이드 패널 생성
     private JPanel createAdePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
@@ -197,7 +147,7 @@ public class Screen extends JFrame {
         adeMenu.add(Products.createProductButton("블루레몬에이드", 3000, "images/blueLemon_ade.jpg", orderList));
         adeMenu.add(Products.createProductButton("자몽에이드", 3000, "images/grapeFruit_ade.jpg", orderList));
 
-        for(JButton ade : adeMenu){
+        for (JButton ade : adeMenu) {
             panel.add(ade);
         }
 
@@ -205,15 +155,16 @@ public class Screen extends JFrame {
         return panel;
     }
 
+    //디저트 패널 생성
     private JPanel createDessertPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
         panel.setVisible(true);
 
-        dessertMenu.add(Products.createProductButton("와플", 3000, "images/waffle.jpg", orderList));
+        dessertMenu.add(Products.createProductButton("와플    ", 3000, "images/waffle.jpg", orderList));
         dessertMenu.add(Products.createProductButton("아이스크림", 3000, "images/icecream.jpg", orderList));
 
-        for(JButton dessert : dessertMenu){
+        for (JButton dessert : dessertMenu) {
             panel.add(dessert);
         }
 
@@ -221,22 +172,23 @@ public class Screen extends JFrame {
         return panel;
     }
 
+    //매개변수로 받은 패널 보여주는 메소드.
     private void showPanel(JPanel panel) {
-        // 기존에 추가된 모든 패널을 제거합니다.
+        // 기존에 추가된 모든 패널 제거
         c.remove(coffeePanel);
         c.remove(smoothiePanel);
         c.remove(adePanel);
         c.remove(dessertPanel);
 
-        // 전달받은 패널을 추가합니다.
+        // 전달받은 패널을 추가
         c.add(panel, BorderLayout.CENTER);
 
-        // 화면을 다시 그립니다.
+        // 화면 다시 그리기
         c.revalidate();
         c.repaint();
     }
 
     public static void main(String[] args) {
-        new Screen();
+        new Main();
     }
-}
+};
